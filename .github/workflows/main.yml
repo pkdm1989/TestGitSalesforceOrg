@@ -1,31 +1,28 @@
-- name: sfdx-orgdev-build-deploy
-  # You may pin to the exact commit or the version.
-  # uses: tiagonnascimento/sfdx-orgdev-build-deploy@aafcd0573083dda115653ca0b88f7cab28e1e92c
-  uses: tiagonnascimento/sfdx-orgdev-build-deploy@v2.1
-  with:
-    # Type of deployment, could be one of the two: production or sandbox (default)
-    type: # default is sandbox
-    # Path for the encrypted certificate to be used on force:auth:jwt:grant
-    certificate_path: 
-    # Decryption key to be used to decrypt the certificate
-    decryption_key: 
-    # Decryption IV to be used to decrypt the certificate
-    decryption_iv: 
-    # Client ID / Consumer Key of a connected app to the target destination
-    client_id: 
-    # Username to be used to connect in the target org
-    username: 
-    # Boolean (true/false) that will indicate whether the deploy is a checkonly deploy or not. If is a checkonly, on force:mdapi:deploy command the option -c will be appended
-    checkonly: # default is true
-    # Path on the current repository to one or more package.xml that represents the packages to be deployed. Based on this files the metadata package will be created and deployed in the order specified
-    manifest_path: 
-    # Specifies which tests are run as part of a deployment. Valid values are: NoTestRun, RunSpecifiedTests, RunLocalTests, RunAllTestsInOrg
-    deploy_testlevel: # default is RunLocalTests
-    # Wait time for deployment to finish in minutes. Default is 60
-    deploy_wait_time: # optional, default is 60
-    # Path for the destructive changes directory
-    destructive_path: # optional
-    # Path on the current repository to the apex script that will be used to create data required by the package
-    data_factory: # optional
-    # Default source path to look for apex classes. Only used when deploy_testlevel is RunSpecifiedTests
-    default_source_path: # optional, default is force-app/main/default
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+  
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v2
+      - uses: sfdx-actions/setup-sfdx@v1
+        with:
+          sfdx-auth-url: ${{ secrets.AUTH_SECRET }}
+      - name: "Install App and Create Delta"   
+        run: |
+          sudo npm install sfdx-git-delta@latest -g
+          git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+          git fetch --all
+          git --no-pager diff --name-status staging origin/master
+          sgd --to staging --from origin/master --repo . --output .
+          cat package/package.xml               
+      - name: 'Convert Metadata'
+        run: sfdx force:source:convert --manifest=package/package.xml --outputdir=convert
+      - name: 'Run Test on Metadata'
+        run: sfdx force:mdapi:deploy --deploydir=convert -w 30
