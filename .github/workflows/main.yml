@@ -16,12 +16,12 @@ jobs:
           sfdx-auth-url: ${{ secrets.AUTH_SECRET }}
       - name: "Install App and Create Delta"   
         run: |
-          sfdx plugins:install sfdx-git-delta
+          sudo npm install sfdx-git-delta@latest -g
           git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
           git fetch --all
-          git checkout -b pr
-          git --no-pager diff --name-status pr origin/main
-          sfdx sgd:source:delta --to pr --from origin/main --repo . --output .
+          git checkout -b ${GITHUB_HEAD_REF}
+          git --no-pager diff --name-status ${GITHUB_HEAD_REF} origin/main
+          sgd --to ${GITHUB_HEAD_REF} --from origin/main --repo . --output .
           cat package/package.xml               
       - name: 'Convert Metadata'
         run: sfdx force:source:convert --manifest=package/package.xml --outputdir=convert
