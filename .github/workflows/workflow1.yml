@@ -21,8 +21,10 @@ jobs:
           sudo npm install sfdx-git-delta@latest -g
           git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
           git fetch --all
-          sgd --to ${GITHUB_HEAD_REF} --from ${GITHUB_BASE_REF} --output .
-          echo "sgd --to ${GITHUB_HEAD_REF} --from ${GITHUB_BASE_REF} --output ."
+          git checkout -b ${GITHUB_HEAD_REF}
+          git --no-pager diff --name-status ${GITHUB_HEAD_REF} origin/${GITHUB_BASE_REF}
+          sgd --to ${GITHUB_HEAD_REF} --from origin/${GITHUB_BASE_REF} --repo . --output .
+          echo "sgd --to ${GITHUB_HEAD_REF} --from origin/${GITHUB_BASE_REF} --repo . --output ."
           cat package/package.xml               
       - name: 'Convert Metadata'
         run: sfdx force:source:convert --manifest=package/package.xml --outputdir=convert
