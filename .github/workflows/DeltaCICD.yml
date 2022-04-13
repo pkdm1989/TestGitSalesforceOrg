@@ -31,6 +31,10 @@ jobs:
         echo "--- package.xml generated with added and modified metadata ---"
         cat package/package.xml
 
+    - name: Set Instance Url
+      run: |
+        node_modules/sfdx-cli/bin/run config:set instanceUrl=https://pkadamdev-dev-ed.my.salesforce.com
+    
     - name: Deployement to PROD
       run: |
         node_modules/sfdx-cli/bin/run force:source:deploy -x package/package.xml --targetusername 00D6F000002U3hf!AQMAQA6XkQw_v1CCjIlGx9gl9PLqkOomfZaG7Q1Uq0RZ0W4U9ZbFB_EW6DPNt2yRXFHtNC.BkE9QgojglKbi3F7.ERFJ79Rj
