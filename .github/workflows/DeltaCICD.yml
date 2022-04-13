@@ -15,14 +15,9 @@ jobs:
         ref: main
         # Fetch all history commit
         fetch-depth: 0
-    
-    - name: Cache NPM dependencies
-      uses: actions/cache@v3
+    - uses: actions/setup-node@v3
       with:
-        path: ~/.npm
-        key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.OS }}-npm-cache-
+        node-version: '14'
 
     - name: Install SFDX & SFDX Git Delta
       run: |
