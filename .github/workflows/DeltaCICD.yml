@@ -9,9 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-       run:
-         working-directory: ./server/
     steps:
     - uses: actions/checkout@v3
       with:
@@ -22,7 +19,7 @@ jobs:
       with:
         node-version: '14'
         cache: 'npm'
-        cache-dependency-path: './server/package-lock.json'
+        cache-dependency-path: "./blog/package-lock.json"
 
     - name: Install SFDX & SFDX Git Delta
       run: |
