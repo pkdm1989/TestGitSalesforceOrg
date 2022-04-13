@@ -10,16 +10,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: main
         # Fetch all history commit
         fetch-depth: 0
-    - uses: actions/setup-node@v3.1.1
+    - uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '14'
         cache: 'npm'
-        cache-dependency-path: 'home/runner/package-lock.json'
 
     - name: Install SFDX & SFDX Git Delta
       run: |
