@@ -15,9 +15,10 @@ jobs:
         ref: main
         # Fetch all history commit
         fetch-depth: 0
-    - uses: actions/setup-node@v1
+    - uses: actions/setup-node@v3.1.1
       with:
-        node-version: '14.6.0'
+        node-version: '16'
+        cache: 'npm'
 
     - name: Install SFDX & SFDX Git Delta
       run: |
