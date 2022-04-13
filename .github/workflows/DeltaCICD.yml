@@ -19,7 +19,7 @@ jobs:
       with:
         node-version: '16'
         cache: 'npm'
-        cache-dependency-path: './server/package-lock.json'
+        cache-dependency-path: '**/package-lock.json'
 
     - name: Install SFDX & SFDX Git Delta
       run: |
