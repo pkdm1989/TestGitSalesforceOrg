@@ -1,0 +1,32 @@
+name: DeltaCICD
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: main
+        # Fetch all history commit
+        fetch-depth: 0
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '14.6.0'
+
+    - name: Install SFDX & SFDX Git Delta
+      run: |
+        npm install sfdx-cli
+        echo y | node_modules/sfdx-cli/bin/run plugins:install sfdx-git-delta
+
+    - name: Generate package.xml
+      run: |
+        #Generate package.xml between the current branch & 
+        node_modules/sfdx-cli/bin/run sgd:source:delta --to "HEAD" --from "HEAD^" --output .
+        echo "--- package.xml generated with added and modified metadata ---"
+        cat package/package.xml
