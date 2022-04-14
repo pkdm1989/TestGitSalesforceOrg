@@ -12,4 +12,4 @@ jobs:
     steps:
     - name: Install github.event.inputs.ref
       run: |
-        echo ref ${{ github.event.inputs.ref }}
+        echo ref ${{ github.event.inputs }}
