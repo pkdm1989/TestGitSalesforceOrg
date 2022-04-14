@@ -18,7 +18,7 @@ public with sharing class BatchLeadConvert implements Database.Batchable<SObject
             leadConverts.add(lc);
         }
 
-        Database.convertLead(leadConverts, false);
+        Database.convertLead(leadConverts, true);
         
 
     }
