@@ -10,9 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'minor-build-testing') && !contains(github.event.head_commit.message, 'next-build') && !contains(github.event.head_commit.message, 'skip ci')"
     steps:
+    - run: echo Branch ${{ github.event.inputs.branch }}
     - uses: actions/checkout@v3
       with:
-        ref: $GITHUB_REF
+        ref: ${{ github.event.inputs.branch }}
         # Fetch all history commit
         fetch-depth: 0
     - uses: sfdx-actions/setup-sfdx@v1
