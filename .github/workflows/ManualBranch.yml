@@ -4,12 +4,17 @@ name: ManualBranch
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Define branch name'     
+        required: true
+        default: 'main'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'minor-build-testing') && !contains(github.event.head_commit.message, 'next-build') && !contains(github.event.head_commit.message, 'skip ci')"
     steps:
-    - name: Install github.event.inputs.ref
+    - name: Install github.event.inputs.branch
       run: |
-        echo ref ${{ github.event.inputs }}
+        echo ref ${{ github.event.inputs.branch }}
