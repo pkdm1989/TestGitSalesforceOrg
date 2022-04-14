@@ -1,0 +1,35 @@
+name: DeltaDeploy
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: main
+        # Fetch all history commit
+        fetch-depth: 0
+    - uses: sfdx-actions/setup-sfdx@v1
+      with:
+        sfdx-auth-url: ${{ secrets.AUTH_SECRET }}
+
+    - name: Install SFDX Git Delta
+      run: |
+        echo 'y' | sfdx plugins:install sfdx-git-delta
+
+    - name: Generate package.xml
+      run: |
+        #Generate package.xml between the current branch & 
+        sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output .
+        echo "--- package.xml generated with added and modified metadata ---"
+        cat package/package.xml
+
+    - name: Deployement to PROD
+      run: |
+        sfdx force:source:deploy -x package/package.xml
