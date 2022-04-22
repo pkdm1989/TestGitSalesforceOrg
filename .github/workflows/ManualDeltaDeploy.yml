@@ -8,6 +8,7 @@ on:
       branch:
         description: 'Define branch name'     
         required: true
+        default: test-branch
 
 jobs:
   build:
